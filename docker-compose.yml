@@ -1,0 +1,34 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  spa:
+    image: "artyomturkin/bb-hackathon-2023-web:v1.0.0"
+    container_name: "spa"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spa.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.spa.entrypoints=web"
+
+  model:
+    image: "artyomturkin/bb-hackathon-2023-fake:v1.0.0"
+    container_name: "model"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.model.rule=PathPrefix(`/api/parse`)"
+      - "traefik.http.routers.model.entrypoints=web"
