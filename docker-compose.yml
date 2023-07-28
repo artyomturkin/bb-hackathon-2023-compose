@@ -18,7 +18,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   spa:
-    image: "artyomturkin/bb-hackathon-2023-web:v1.0.0"
+    image: "artyomturkin/bb-hackathon-2023-web:v1.0.1"
     container_name: "spa"
     labels:
       - "traefik.enable=true"
@@ -26,9 +26,13 @@ services:
       - "traefik.http.routers.spa.entrypoints=web"
 
   model:
-    image: "artyomturkin/bb-hackathon-2023-fake:v1.0.0"
+    image: "artyomturkin/bb-hackathon-2023-recognition:v1.0.1"
     container_name: "model"
+    env_file:
+      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.model.rule=PathPrefix(`/api/parse`)"
+      - "traefik.http.middlewares.model.stripprefix.prefixes=/api/parse"
       - "traefik.http.routers.model.entrypoints=web"
+      - "traefik.http.routers.model.middlewares=model"
