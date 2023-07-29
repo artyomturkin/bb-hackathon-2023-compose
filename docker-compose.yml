@@ -25,9 +25,9 @@ services:
       - "traefik.http.routers.spa.rule=PathPrefix(`/`)"
       - "traefik.http.routers.spa.entrypoints=web"
 
-  model:
+  model_0:
     image: "artyomturkin/bb-hackathon-2023-recognition:v1.0.1"
-    container_name: "model"
+    container_name: "model0"
     env_file:
       - .env
     labels:
@@ -36,3 +36,4 @@ services:
       - "traefik.http.middlewares.model.stripprefix.prefixes=/api/parse"
       - "traefik.http.routers.model.entrypoints=web"
       - "traefik.http.routers.model.middlewares=model"
+      - "traefik.http.services.model-service.loadbalancer.server.port=5000"
